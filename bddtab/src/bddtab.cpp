@@ -87,6 +87,8 @@ bool bddNormalise = false;
 // Do an ontology classification instead of a single provability task.
 bool classify = false;
 
+// Print only size
+bool printSizeOnly = false;
 
 // Algorithm statistics:
 bool verbose = false;
@@ -233,8 +235,12 @@ int main(int argc, char * argv[]) {
 	
 	// Build a BDD of notpsi and gamma
 	bdd notpsiAndGammaBDD = toBDD(notpsiNNF) & gammaBDD;
-	
-	
+
+	if (printSizeOnly){
+		std::cout << bdd_nodecount(notpsiAndGammaBDD) << std::endl; 
+		return 0;	
+	}
+
 	bool isSat = isSatisfiable(notpsiAndGammaBDD);
 	if (S4) {
 		std::cout << "S4:";
@@ -389,7 +395,10 @@ void processArgs(int argc, char * argv[]) {
 			bddNormalise = true;
 		} else if (strncmp(argv[i], "-classify", 9) == 0) {
 			classify = true;
-		} else {
+		} else if (strncmp(argv[i], "-size", 5) == 0){
+			printSizeOnly = true;	
+		}
+		else {
 			printUsage();
 			exit(1);
 		}
